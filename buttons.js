@@ -45,6 +45,20 @@ var buttons = {
 		sleep.sleep(2);
 
 		buttons.shortPressPowerButton(host);
+	},
+
+	initializePins: function(config) {
+		config.hosts.forEach(function(host, index, array) {
+			var pin = host.pwrPin
+
+			var cmd = "gpio mode "+ pin +" out";
+			console.log(cmd);
+			execSync(cmd);
+
+			cmd = "gpio write "+ pin +" 1";
+			console.log(cmd);
+			execSync(cmd);
+		});
 	}
 };
 
