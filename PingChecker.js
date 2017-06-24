@@ -32,3 +32,6 @@ PingChecker.prototype.getStatus = function() {
 	}
 	return (this.consecutivePingFailures < 5);
 }
+PingChecker.prototype.resetFailureCount = function() {
+	this.consecutivePingFailures = 0;
+}

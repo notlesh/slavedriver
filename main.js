@@ -31,10 +31,11 @@ function mainLoop() {
 
 		if (fail) {
 			buttons.resetHost(config.hosts[0]);
+			pingChecker.resetFailureCount();
 		}
 	});
 
-	setTimeout(mainLoop, 120000);
+	setTimeout(mainLoop, 30000);
 }
 
 setTimeout(mainLoop, 50); // initial kickoff; loop will schedule further calls
