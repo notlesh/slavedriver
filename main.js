@@ -30,7 +30,7 @@ function mainLoop() {
 		}
 
 		if (fail) {
-			buttons.restartHost(config.hosts[0]);
+			buttons.resetHost(config.hosts[0]);
 		}
 	});
 

@@ -2,62 +2,59 @@ var execSync = require('child_process').execSync;
 var sleep = require("sleep");
 
 var buttons = {
-	pressPowerButton: function(host, duration) {
-
-		/*
-		gpio.write(host.pwrPin, false, function(error) {
-			if (error) {
-				throw error;
-			}
-		});
-		*/
-		var cmd = "gpio write "+ host.pwrPin +" 0";
+	pressButton: function(pin, duration) {
+		var cmd = "gpio write "+ pin +" 0";
 		console.log(cmd);
 		execSync(cmd);
 
 		sleep.sleep(duration);
 
-		/*
-		gpio.write(host.pwrPin, true, function(error) {
-			if (error) {
-				throw error;
-			}
-		});
-		*/
-		cmd = "gpio write "+ host.pwrPin +" 1";
+		cmd = "gpio write "+ pin +" 1";
 		console.log(cmd);
 		execSync(cmd);
 	},
 
-	longPressPowerButton: function(host) {
-		return buttons.pressPowerButton(host, 6);
+	longPressButton: function(pin) {
+		return buttons.pressButton(pin, 6);
 	},
 
-	shortPressPowerButton: function(host) {
-		return buttons.pressPowerButton(host, 1);
+	shortPressButton: function(pin) {
+		return buttons.pressButton(pin, 1);
 	},
 
-	restartHost: function(host) {
-		console.log("Restarting host "+ host.name);
+	coldRestartHost: function(host) {
+		console.log("Cold restarting host "+ host.name);
 
-		buttons.longPressPowerButton(host);
+		buttons.longPressButton(host.pwrPin);
 
 		sleep.sleep(2);
 
-		buttons.shortPressPowerButton(host);
+		buttons.shortPressButton(host.pwrPin);
+	},
+
+	resetHost: function(host) {
+		console.log("Resetting host "+ host.name);
+
+		buttons.shortPressButton(host.resetPin);
+	},
+
+	initializePin: function(pin) {
+
+		// TODO: don't assume OUT and high
+
+		var cmd = "gpio mode "+ pin +" out";
+		console.log(cmd);
+		execSync(cmd);
+
+		cmd = "gpio write "+ pin +" 1";
+		console.log(cmd);
+		execSync(cmd);
 	},
 
 	initializePins: function(config) {
 		config.hosts.forEach(function(host, index, array) {
-			var pin = host.pwrPin
-
-			var cmd = "gpio mode "+ pin +" out";
-			console.log(cmd);
-			execSync(cmd);
-
-			cmd = "gpio write "+ pin +" 1";
-			console.log(cmd);
-			execSync(cmd);
+			buttons.initializePin(host.pwrPin);
+			buttons.initializePin(host.resetPin);
 		});
 	}
 };
