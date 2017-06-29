@@ -93,10 +93,10 @@ SSHChecker.prototype.check = function() {
 
 }
 SSHChecker.prototype.getStatus = function() {
-	var failure = (this.numSSHFailures > 2)
-		|| (this.numHashFileAgeFailures > 2)
-		|| (this.numLowHashes > 4)
-		|| (this.numLowGPUs > 1);
+	var failure = (this.numSSHFailures > 4)
+		|| (this.numHashFileAgeFailures > 4)
+		|| (this.numLowHashes > 8)
+		|| (this.numLowGPUs > 3);
 
 	return (! failure);
 }
