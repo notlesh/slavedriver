@@ -7,12 +7,13 @@ var Checker = require("./Checker");
  */
 module.exports = PingChecker;
 PingChecker.prototype = Object.create(Checker.prototype);
-function PingChecker(host) {
-	Checker.call(this, host);
+function PingChecker(host, checkerConfig) {
+	Checker.call(this, host, checkerConfig);
 
 	this.consecutivePingFailures = 0;
 };
-PingChecker.prototype.check = function() {
+PingChecker.prototype.doCheck = function() {
+	console.log("Checking ping (host: "+ this.host.name +")");
 
 	var self = this;
 
@@ -30,7 +31,7 @@ PingChecker.prototype.getStatus = function() {
 	if (this.consecutivePingFailures > 0) {
 		console.log("PingChecker.getStatus(): "+ this.consecutivePingFailures +" of 5");
 	}
-	return (this.consecutivePingFailures < 5);
+	return (this.consecutivePingFailures < this.checkerConfig.failureTolerance);
 }
 PingChecker.prototype.resetFailureCount = function() {
 	this.consecutivePingFailures = 0;

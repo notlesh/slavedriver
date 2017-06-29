@@ -5,54 +5,62 @@
  */
 var PingChecker = require("./PingChecker");
 var SSHChecker = require("./SSHChecker");
+var HostStats = require("./HostStats");
+var HostState = require("./HostState");
 var buttons = require("./buttons");
 var config = require("./config");
 
 buttons.initializePins(config);
 
+// initialize checkers, host info, etc.
 var pingCheckers = [];
 var sshCheckers = [];
-
+var hostInfo = [];
 config.hosts.forEach(function(host, index, array) {
-	pingCheckers[index] = new PingChecker(host);
-	sshCheckers[index] = new SSHChecker(host);
+	pingCheckers[index] = new PingChecker(host, config.pingCheckerConfig);
+	sshCheckers[index] = new SSHChecker(host, config.sshCheckerConfig);
+
+	hostInfo[index] = {
+		stats: new HostStats(),
+		state: new HostState()
+	};
+
+	// initialize each checker
+	// this will kick off initial requests, which will handle subsequent scheduling
+	// of future checks
+	pingCheckers[index].initializeCheckLoop();
+	sshCheckers[index].initializeCheckLoop();
 });
+
 
 function mainLoop() {
 
-	var delay = 30000; // delay before next loop -- we will further slow down if we restart a host
+	// periodically check status. if something fails, reset host
 
 	config.hosts.forEach(function(host, index, array) {
+		pingChecker = pingCheckers[index];
+		sshChecker = sshCheckers[index];
+
 		var fail = false;
 
-		var pingChecker = pingCheckers[index];
-		var sshChecker = sshCheckers[index];
-
-		pingChecker.check();
 		if (! pingChecker.getStatus()) {
-			console.log("FAIL - ping - "+ host.name +"!");
-
+			console.log("Resetting host "+ host.name +", ping checker failed");
 			fail = true;
 		}
 
-		sshChecker.check();
 		if (! sshChecker.getStatus()) {
-			console.log("FAIL - ssh - "+ host.name +"!");
-			console.log(sshChecker);
-
+			console.log("Resetting host "+ host.name +", ssh checker failed");
 			fail = true;
 		}
 
 		if (fail) {
-			buttons.resetHost(config.hosts[0]);
-			pingChecker.resetFailureCount();
-			sshChecker.resetFailureCount();
-
-			delay = 60000;
+			// buttons.resetHost(host);
+			pingChecker.handleResetHost();
+			sshChecker.handleResetHost();
 		}
 	});
 
-	setTimeout(mainLoop, delay);
+	setTimeout(mainLoop, 250);
 }
 
 setTimeout(mainLoop, 50); // initial kickoff; loop will schedule further calls

@@ -7,15 +7,16 @@ var Checker = require("./Checker");
  */
 module.exports = SSHChecker;
 SSHChecker.prototype = Object.create(Checker.prototype);
-function SSHChecker(host) {
-	Checker.call(this, host);
+function SSHChecker(host, checkerConfig) {
+	Checker.call(this, host, checkerConfig);
 
 	this.numSSHFailures = 0;
 	this.numHashFileAgeFailures = 0;
 	this.numLowHashes = 0;
 	this.numLowGPUs = 0;
 };
-SSHChecker.prototype.check = function() {
+SSHChecker.prototype.doCheck = function() {
+	console.log("Checking ssh/hash (host: "+ this.host.name +")");
 
 	var self = this;
 
@@ -93,10 +94,10 @@ SSHChecker.prototype.check = function() {
 
 }
 SSHChecker.prototype.getStatus = function() {
-	var failure = (this.numSSHFailures > 4)
-		|| (this.numHashFileAgeFailures > 4)
-		|| (this.numLowHashes > 8)
-		|| (this.numLowGPUs > 3);
+	var failure = (this.numSSHFailures > this.checkerConfig.sshConnectionFailureTolerance)
+		|| (this.numHashFileAgeFailures > this.checkerConfig.hashFileAgeFailureTolerance)
+		|| (this.numLowHashes > this.checkerConfig.lowHashFailureTolerance)
+		|| (this.numLowGPUs > this.checkerConfig.lowGPUFailureToleraance);
 
 	return (! failure);
 }
