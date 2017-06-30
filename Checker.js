@@ -36,7 +36,7 @@ Checker.prototype.initializeCheckLoop = function() {
 }
 Checker.prototype.handleResetHost = function() {
 	// cancel any outstanding timouts and reschedule for a longer period
-	cancelTimeout(this.checkerTimeoutId);
+	clearTimeout(this.checkerTimeoutId);
 	this.checkerTimeoutId = null;
 
 	this.resetFailureCount();
