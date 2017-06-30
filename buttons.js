@@ -1,16 +1,17 @@
 var execSync = require('child_process').execSync;
 var sleep = require("sleep");
+var Log = require("./Log");
 
 var buttons = {
 	pressButton: function(pin, duration) {
 		var cmd = "gpio write "+ pin +" 0";
-		console.log(cmd);
+		Log.debug(cmd);
 		execSync(cmd);
 
 		sleep.sleep(duration);
 
 		cmd = "gpio write "+ pin +" 1";
-		console.log(cmd);
+		Log.debug(cmd);
 		execSync(cmd);
 	},
 
@@ -23,7 +24,7 @@ var buttons = {
 	},
 
 	coldRestartHost: function(host) {
-		console.log("Cold restarting host "+ host.name);
+		Log.warn("Cold restarting host "+ host.name);
 
 		buttons.longPressButton(host.pwrPin);
 
@@ -33,7 +34,7 @@ var buttons = {
 	},
 
 	resetHost: function(host) {
-		console.log("Resetting host "+ host.name);
+		Log.warn("Resetting host "+ host.name);
 
 		buttons.shortPressButton(host.resetPin);
 	},
@@ -43,11 +44,11 @@ var buttons = {
 		// TODO: don't assume OUT and high
 
 		var cmd = "gpio mode "+ pin +" out";
-		console.log(cmd);
+		Log.debug(cmd);
 		execSync(cmd);
 
 		cmd = "gpio write "+ pin +" 1";
-		console.log(cmd);
+		Log.debug(cmd);
 		execSync(cmd);
 	},
 

@@ -10,7 +10,7 @@ function Checker(host, checkerConfig) {
 	this.checkerConfig = checkerConfig;
 };
 Checker.prototype.doCheck = function() {
-	console.log("Override check()!");
+	throw new Error("Subclass should override Checker.doCheck()");
 }
 Checker.prototype.check = function() {
 	this.doCheck();
@@ -21,11 +21,11 @@ Checker.prototype.check = function() {
 	this.checkerTimeoutId = setTimeout(function() {self.check()}, timeout);
 }
 Checker.prototype.getStatus = function() {
-	console.log("Override getStatus()!");
+	throw new Error("Subclass should override Checker.getStatus()");
 	// should return true or false based on analysis of host
 }
 Checker.prototype.resetFailureCount = function() {
-	console.log("Override resetFailureCount()!");
+	throw new Error("Subclass should override Checker.resetFailureCount()");
 }
 Checker.prototype.initializeCheckLoop = function() {
 	// schedule periodic checks for this checker based on config

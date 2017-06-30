@@ -1,6 +1,7 @@
 // public
 var ping = require("ping");
 var Checker = require("./Checker");
+var Log = require("./Log");
 
 /**
  * Checks that a given host is pingable
@@ -13,7 +14,7 @@ function PingChecker(host, checkerConfig) {
 	this.consecutivePingFailures = 0;
 };
 PingChecker.prototype.doCheck = function() {
-	console.log("Checking ping (host: "+ this.host.name +")");
+	Log.debug("Checking ping (host: "+ this.host.name +")");
 
 	var self = this;
 
@@ -21,16 +22,13 @@ PingChecker.prototype.doCheck = function() {
 		if (isAlive) {
 			self.consecutivePingFailures = 0;
 		} else {
-			console.log("!!! host "+ self.host.name +" did not reply");
+			Log.warn("!!! host "+ self.host.name +" did not reply");
 			self.consecutivePingFailures++;
 		}
 	});
 
 }
 PingChecker.prototype.getStatus = function() {
-	if (this.consecutivePingFailures > 0) {
-		console.log("PingChecker.getStatus(): "+ this.consecutivePingFailures +" of 5");
-	}
 	return (this.consecutivePingFailures < this.checkerConfig.failureTolerance);
 }
 PingChecker.prototype.resetFailureCount = function() {

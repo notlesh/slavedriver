@@ -1,6 +1,7 @@
 // public
 var node_ssh = require("node-ssh");
 var Checker = require("./Checker");
+var Log = require("./Log");
 
 /**
  * Checks that we can SSH into a given host
@@ -16,7 +17,7 @@ function SSHChecker(host, checkerConfig) {
 	this.numLowGPUs = 0;
 };
 SSHChecker.prototype.doCheck = function() {
-	console.log("Checking ssh/hash (host: "+ this.host.name +")");
+	Log.debug("Checking ssh/hash (host: "+ this.host.name +")");
 
 	var self = this;
 
@@ -39,14 +40,14 @@ SSHChecker.prototype.doCheck = function() {
 			var age = parseInt(result.stdout);
 
 			if (age > 10) {
-				console.log("SSHChecker ("+ self.host.name +"): Hash file is old: "+ age +" seconds");
+				Log.warn("SSHChecker ("+ self.host.name +"): Hash file is old: "+ age +" seconds");
 				self.numHashFileAgeFailures++;
 			} else {
 				self.numHashFileAgeFailures = 0;
 			}
 		})
 		.catch(function(error) {
-			console.log("SSHChecker ("+ self.host.name +"): catch() called trying to obtain age of hash file");
+			Log.warn("SSHChecker ("+ self.host.name +"): catch() called trying to obtain age of hash file");
 			console.log(error);
 			self.numHashFileAgeFailures++;
 		});
@@ -66,28 +67,28 @@ SSHChecker.prototype.doCheck = function() {
 			});
 
 			if (totalHashRate < self.host.minHashRate) {
-				console.log("SSHChecker ("+ self.host.name +"): hash rate is low ("+ totalHashRate +" < "+ self.host.minHashRate +")" );
+				Log.warn("SSHChecker ("+ self.host.name +"): hash rate is low ("+ totalHashRate +" < "+ self.host.minHashRate +")" );
 				self.numLowHashes++;
 			} else {
 				self.numLowHashes = 0;
 			}
 
 			if (numHashesReported < self.host.numGPUs) {
-				console.log("SSHChecker ("+ self.host.name +"): Too few GPUs! ("+ numHashesReported +" < "+ self.host.numGPUs +")" );
+				Log.warn("SSHChecker ("+ self.host.name +"): Too few GPUs! ("+ numHashesReported +" < "+ self.host.numGPUs +")" );
 				self.numLowGPUs++;
 			} else {
 				self.numLowGPUs = 0;
 			}
 		})
 		.catch(function(error) {
-			console.log("SSHChecker ("+ self.host.name +"): catch() called trying to obtain hash rates");
-			console.log(error);
+			Log.error("SSHChecker ("+ self.host.name +"): catch() called trying to obtain hash rates");
+			Log.error(error);
 			self.numHashFileAgeFailures++;
 		});
 
 	}).catch(function(error) {
-		console.log("SSHChecker ("+ self.host.name +"): catch() called for SSH connection");
-		console.log(error);
+		Log.error("SSHChecker ("+ self.host.name +"): catch() called for SSH connection");
+		Log.error(error);
 
 		self.numSSHFailures++;
 	});

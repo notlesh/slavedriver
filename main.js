@@ -9,6 +9,7 @@ var HostStats = require("./HostStats");
 var HostState = require("./HostState");
 var buttons = require("./buttons");
 var config = require("./config");
+var Log = require("./Log");
 
 buttons.initializePins(config);
 
@@ -44,12 +45,12 @@ function mainLoop() {
 		var fail = false;
 
 		if (! pingChecker.getStatus()) {
-			console.log("Resetting host "+ host.name +", ping checker failed");
+			Log.warn("Resetting host "+ host.name +", ping checker failed");
 			fail = true;
 		}
 
 		if (! sshChecker.getStatus()) {
-			console.log("Resetting host "+ host.name +", ssh checker failed");
+			Log.warn("Resetting host "+ host.name +", ssh checker failed");
 			fail = true;
 		}
 

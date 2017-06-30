@@ -19,7 +19,7 @@ var config = {
 		ip: "192.168.10.137",
 		pwrPin: 24,
 		resetPin: 25,
-		minHashRate: 128,
+		minHashRate: 125,
 		numGPUs: 6,
 		// sshKeyFile: "/home/pi/.ssh/ethos.id_ed25519",
 		sshKeyFile: "/home/pi/.ssh/ethos.id_rsa",
