@@ -8,6 +8,7 @@ module.exports = Checker;
 function Checker(host, checkerConfig) {
 	this.host = host;
 	this.checkerConfig = checkerConfig;
+	this.lastReset = (new Date()).getTime();
 };
 Checker.prototype.doCheck = function() {
 	throw new Error("Subclass should override Checker.doCheck()");
@@ -41,4 +42,5 @@ Checker.prototype.handleResetHost = function() {
 
 	this.resetFailureCount();
 	this.initializeCheckLoop();
+	this.lastReset = (new Date()).getTime();
 }

@@ -34,7 +34,7 @@ var buttons = {
 	},
 
 	resetHost: function(host) {
-		Log.warn("Resetting host "+ host.name);
+		Log.warn("Pressing reset button on host "+ host.name);
 
 		buttons.shortPressButton(host.resetPin);
 	},

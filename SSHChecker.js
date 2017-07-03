@@ -32,6 +32,14 @@ SSHChecker.prototype.doCheck = function() {
 
 		self.numSSHFailures = 0;
 
+		// if it's too early to check miner hashes, bail now
+		var now = (new Date()).getTime();
+		var elapsed = now - self.lastReset;
+		if (elapsed < self.checkerConfig.hashCheckDelayAfterReset * 1000) {
+			Log.debug("Too early to check hash for host "+ self.host.name);
+			return;
+		}
+
 		// this should be our ssh object (now with a valid connection)
 		ssh.execCommand('echo $(($(date +%s) - $(date +%s -r "/var/run/ethos/miner_hashes.file")))')
 		.then(function(result) {

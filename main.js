@@ -55,7 +55,24 @@ function mainLoop() {
 		}
 
 		if (fail) {
-			// buttons.resetHost(host);
+
+			// update stats/state
+			var stats = hostInfo[index].stats;
+			var state = hostInfo[index].state;
+
+			var now = (new Date()).getTime();
+			var uptime = (now - state.lastReset);
+			state.lastReset = now;
+
+			stats.numResets++;
+			if (stats.longestUptime < uptime) {
+				stats.longestUptime = uptime;
+			}
+
+			Log.info("Resetting host "+ host.name);
+			Log.info("  stats: "+ JSON.stringify(stats));
+
+			buttons.resetHost(host);
 			pingChecker.handleResetHost();
 			sshChecker.handleResetHost();
 		}
