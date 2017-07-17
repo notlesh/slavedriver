@@ -25,6 +25,17 @@ var config = {
 		sshKeyFile: "/home/pi/.ssh/ethos.id_rsa",
 		sshUserName: "ethos"
 		
+	},
+	{
+		name: "Eth2",
+		ip: "192.168.10.140",
+		pwrPin: 28,
+		resetPin: 29,
+		minHashRate: 153,
+		numGPUs: 6,
+		sshKeyFile: "/home/pi/.ssh/ethos.id_rsa",
+		sshUserName: "ethos"
+		
 	}
 	],
 
