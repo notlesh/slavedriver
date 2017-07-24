@@ -19,13 +19,14 @@ var pingCheckers = [];
 var sshCheckers = [];
 var hostInfo = [];
 config.hosts.forEach(function(host, index, array) {
-	pingCheckers[index] = new PingChecker(host, config.pingCheckerConfig);
-	sshCheckers[index] = new SSHChecker(host, config.sshCheckerConfig);
 
 	hostInfo[index] = {
 		stats: new HostStats(),
 		state: new HostState()
 	};
+
+	pingCheckers[index] = new PingChecker(host, config.pingCheckerConfig);
+	sshCheckers[index] = new SSHChecker(host, hostInfo[index].stats, config.sshCheckerConfig);
 
 	// initialize each checker
 	// this will kick off initial requests, which will handle subsequent scheduling

@@ -1,3 +1,5 @@
+var GPUStats = require("./GPUStats");
+
 /**
  * Stats for a host
  */
@@ -8,5 +10,16 @@ function HostStats() {
 	this.longestUptime = 0;
 	this.longestUptimePretty = "0 seconds";
 	this.numResets = 0;
+
+	// prime max number of GPUs we expect
+	// TODO: handle more gracefully
+	this.gpuStats = [
+		new GPUStats(),
+		new GPUStats(),
+		new GPUStats(),
+		new GPUStats(),
+		new GPUStats(),
+		new GPUStats()
+	];
 };
 

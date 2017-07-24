@@ -8,8 +8,10 @@ var Log = require("./Log");
  */
 module.exports = SSHChecker;
 SSHChecker.prototype = Object.create(Checker.prototype);
-function SSHChecker(host, checkerConfig) {
+function SSHChecker(host, stats, checkerConfig) {
 	Checker.call(this, host, checkerConfig);
+
+	this.hostStats = stats;
 
 	this.numSSHFailures = 0;
 	this.numHashFileAgeFailures = 0;
@@ -72,6 +74,8 @@ SSHChecker.prototype.doCheck = function() {
 				var hashRate = parseFloat(hashRateStr);
 				totalHashRate += hashRate;
 				numHashesReported++;
+
+				self.hostStats.gpuStats[index].addSample(hashRate);
 			});
 
 			if (totalHashRate < self.host.minHashRate) {
